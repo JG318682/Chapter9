@@ -1,0 +1,1 @@
+values[i][j] = keyboard.nextInt()
