@@ -9,8 +9,16 @@
  * 
  * Play continues, matching two cards at a time, until all cards have been matched.
  */
+import java.util.Random;
+
+
 public class Concentration extends Board
 {
+    public static final int CONCENTRATION = 100;
+    public static final int SEVENS = 200;
+    private int gameRules;
+
+
     // create the game board
     private Tile[][] gameboard = makeBoard();
 
@@ -18,15 +26,21 @@ public class Concentration extends Board
      * The constructor for the game. Creates the 2-dim gameboard
      * by populating it with tiles.
      */
+    Random rand = new Random();
+
+
     public Concentration() {
-        for (int j = 0; j < gameboard.length; j++) {
-            for (int i = 0; i < gameboard.length; i++) {
-                new Tile[j][i] = ;
+        String[] cards = getCards();
+        int numCards = cards.length - 1;
+        for (int i = 0; i < gameboard.length; i++){
+            for (int j = 0; j < gameboard[0].length; j++){
+               int r = rand.nextInt(gameboard.length * numCards);
+                gameboard[i][j] = new Tile(cards[r]);
+                cards[r] = cards[numCards];
             }
         }
-       // to do
-
     }
+
     /**
      * Determine if the board is full of cards that have all been matched,
      * indicating the game is over
@@ -36,9 +50,11 @@ public class Concentration extends Board
      * @return true if all pairs of cards have been matched, false otherwse
      */
     public boolean allTilesMatch() {
-        
-        // to do
-        
+        for (int i = 0; i < gameboard.length; i++) {
+            for (int j = 0; j < gameboard.length; j++) {
+                if (!gameboard[i][j].matched()) return false;
+            }
+        }
         return true;
     }
 
@@ -57,10 +73,26 @@ public class Concentration extends Board
      * @return a message indicating whether or not a match occured
      */
     public String checkForMatch(int row1, int column1, int row2, int column2) {
-        
-        // to do
-        
-        return "";
+
+        boolean tilesMatch = false;
+        String msg = " ";
+        Tile tile1 = gameboard[row1][column1];
+        Tile tile2 = gameboard[row2][column2];
+
+        if (gameRules == CONCENTRATION ){
+            tilesMatch = tile1.equals(tile2);
+        }
+
+        if (gameRules == SEVENS ) {
+            tilesMatch = tile1.addsTo7(tile2);
+        }
+
+        if (tilesMatch == true) {
+            System.out.println("You Found A Match!");
+        } else
+            tile1 = faceUp &&  false;
+        tile2 = faceUp && false;
+            return msg;
     }
 
     /**
