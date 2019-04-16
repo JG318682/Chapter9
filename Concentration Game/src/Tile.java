@@ -22,7 +22,8 @@ public class Tile
     private String cardFace; 
     private String cardBack = "_____";
     private String cardMatched = "  *  ";
-    
+
+
     /**
      * Construct a tile with a string value. The default state
      * of a tile is unmatched and face down on the board.
@@ -90,5 +91,28 @@ public class Tile
         return matched;
     }
 
+    /**
+     * Deteremines if two cards are the same according the Sevens rules: the card faces add to 7.
+     *
+     * @param tile the tile to compare this tile to
+     * @param rules the rules to play by, "concentration" or "sevens"
+     */
+    public boolean addsTo7(Tile tile) {
+        int a = Integer.parseInt(this.cardFace);
+        int b = Integer.parseInt(tile.cardFace);
+        if ( a + b == 7) return true;
+        else return false;
+    }
+
+     /**
+     * Determines if two cards are considered the same
+     *
+     * @param the tile to check for a match to this tile
+     * @return true if the match, false otherwise
+     */
+    public boolean equals(Tile tile) {
+        if (this.cardFace.equals(tile.cardFace) )return true;
+        else return false;
+    }
 }
 

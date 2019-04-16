@@ -9,11 +9,8 @@
  * 
  * Play continues, matching two cards at a time, until all cards have been matched.
  */
-import java.util.Random;
 
-
-public class Concentration extends Board
-{
+public class Concentration extends Board {
     public static final int CONCENTRATION = 100;
     public static final int SEVENS = 200;
     private int gameRules;
@@ -22,21 +19,25 @@ public class Concentration extends Board
     // create the game board
     private Tile[][] gameboard = makeBoard();
 
-    /** 
+    /**
      * The constructor for the game. Creates the 2-dim gameboard
      * by populating it with tiles.
      */
-    Random rand = new Random();
-
 
     public Concentration() {
+
         String[] cards = getCards();
         int numCards = cards.length - 1;
-        for (int i = 0; i < gameboard.length; i++){
-            for (int j = 0; j < gameboard[0].length; j++){
-               int r = rand.nextInt(gameboard.length * numCards);
-                gameboard[i][j] = new Tile(cards[r]);
+
+        gameRules = CONCENTRATION;
+
+        for (int i = 0; i < gameboard.length; i++) {
+            for (int j = 0; j < gameboard[0].length; j++) {
+              int r = (int) (Math.random() * numCards );
+
+              gameboard[i][j] = new Tile(cards[r]);
                 cards[r] = cards[numCards];
+                numCards--;
             }
         }
     }
@@ -44,14 +45,14 @@ public class Concentration extends Board
     /**
      * Determine if the board is full of cards that have all been matched,
      * indicating the game is over
-     * 
+     * <p>
      * Precondition: gameboard is populated with tiles
-     * 
-     * @return true if all pairs of cards have been matched, false otherwse
+     *
+     * @return true if all pairs of cards have been matched, false otherwise
      */
     public boolean allTilesMatch() {
         for (int i = 0; i < gameboard.length; i++) {
-            for (int j = 0; j < gameboard.length; j++) {
+            for (int j = 0; j < gameboard[0].length; j++) {
                 if (!gameboard[i][j].matched()) return false;
             }
         }
@@ -61,69 +62,95 @@ public class Concentration extends Board
     /**
      * Check for a match between the cards in the two tile locations.
      * For matched cards, remove from the board. For unmatched cares, them face down again.
-     * 
+     * <p>
      * Precondition: gameboard is populated with tiles,
      * row values (i values) must be in the range of 0 to gameboard.length,
      * column values (j values) must be in the range of 0 to gameboard[0].length
-     * 
-     * @param row1 the row value of Tile 1
+     *
+     * @param row1    the row value of Tile 1
      * @param column1 the column value of Tile 1
-     * @param row2 the row value of Tile 2
+     * @param row2    the row value of Tile 2
      * @param column2 the column vlue of Tile 2
      * @return a message indicating whether or not a match occured
      */
     public String checkForMatch(int row1, int column1, int row2, int column2) {
 
         boolean tilesMatch = false;
-        String msg = " ";
+        String msg = "";
         Tile tile1 = gameboard[row1][column1];
         Tile tile2 = gameboard[row2][column2];
 
-        if (gameRules == CONCENTRATION ){
+        if (gameRules == CONCENTRATION) {
             tilesMatch = tile1.equals(tile2);
         }
 
-        if (gameRules == SEVENS ) {
+        if (gameRules == SEVENS) {
             tilesMatch = tile1.addsTo7(tile2);
         }
 
-        if (tilesMatch == true) {
-            System.out.println("You Found A Match!");
+        if (tilesMatch) {
+            tile1.foundMatch();
+            tile2.foundMatch();
+            msg = "You Found A Match!";
+
         } else
-            tile1 = faceUp &&  false;
-        tile2 = faceUp && false;
-            return msg;
+            tile1.faceUp(false);
+            tile2.faceUp(false);
+
+        return msg;
     }
 
     /**
      * Set  tile to show its card in the face up state
-     * 
+     * <p>
      * Precondition: gameboard is populated with tiles,
      * row values (i values) must be in the range of 0 to gameboard.length,
      * column values (j values) must be in the range of 0 to gameboard[0].length
-     * 
-     * @param row the row value of Tile
+     *
+     * @param row    the row value of Tile
      * @param column the column value of Tile
      */
-    public void showFaceUp (int row, int column) {
-        
-        // to do 
+    public void showFaceUp(int row, int column) {
+        Tile tile = gameboard[row][column];
+        tile.faceUp(true);
+        tile.faceUp(true);
     }
 
     /**
      * Returns a string representation of the board. A tab is placed between tiles,
      * and a newline is placed at the end of a row
-     * 
+     * <p>
      * Precondition: gameboard is populated with tiles
-     * 
-     * @return a string represetation of the board
+     *
+     * @return a string representation of the board
      */
     public String toString() {
-        
-        // to do
-        
-        return "";
+        String boardValues = "";
+        for (int i = 0; i < gameboard.length; i++) {
+            for (int j = 0; j < gameboard[0].length; j++) {
+                Tile t = gameboard[i][j];
+                if (t.isFaceUp()) {
+                    boardValues += t.getFace();
+                } else
+                    boardValues += t.getBack();
+                    boardValues += "\t";
+            }
+            boardValues += "\n";
+        }
+        return boardValues;
     }
+
+    public boolean validSelection(int i, int j) {
+
+    if(i < gameboard.length)
+    {
+        if (j < gameboard[0].length) {
+            if (!gameboard[i][j].matched()) {return true;}
+
+    }
+    }
+        return false;
+}
 
 }
 
